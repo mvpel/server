@@ -54,6 +54,7 @@ fi
 DATADIR=${DATADIR:="/data/inferenceserver/${REPO_VERSION}"}
 OPTDIR=${OPTDIR:="/opt"}
 SERVER=${OPTDIR}/tritonserver/bin/tritonserver
+BACKEND_DIR=${OPTDIR}/tritonserver/backends
 
 source ../common/util.sh
 
@@ -207,7 +208,7 @@ for model_trial in v 0 1 2 4; do
             test_no_sequence_start2 \
             test_no_sequence_end \
             test_no_correlation_id ; do
-        SERVER_ARGS="--model-repository=`pwd`/$MODEL_DIR"
+        SERVER_ARGS="--model-repository=`pwd`/$MODEL_DIR --backend-directory=${BACKEND_DIR}"
         SERVER_LOG="./$i.$MODEL_DIR.serverlog"
         
         if [ "$TEST_VALGRIND" -eq 1 ]; then
@@ -278,7 +279,7 @@ for model_trial in v 0 1 2 4; do
             [[ "$i" != "test_backlog_same_correlation_id_no_end" ]] && export TRITONSERVER_DELAY_SCHEDULER=8 &&
             [[ "$i" != "test_half_batch" ]] && export TRITONSERVER_DELAY_SCHEDULER=4 &&
             [[ "$i" != "test_backlog_sequence_timeout" ]] && export TRITONSERVER_DELAY_SCHEDULER=12
-        SERVER_ARGS="--model-repository=`pwd`/$MODEL_DIR"
+        SERVER_ARGS="--model-repository=`pwd`/$MODEL_DIR --backend-directory=${BACKEND_DIR}"
         SERVER_LOG="./$i.$MODEL_DIR.serverlog"
         
         if [ "$TEST_VALGRIND" -eq 1 ]; then
@@ -349,7 +350,7 @@ if [[ $BACKENDS == *"custom"* ]]; then
       export TRITONSERVER_BACKLOG_DELAY_SCHEDULER=0
       export TRITONSERVER_DELAY_SCHEDULER=12
 
-      SERVER_ARGS="--model-repository=`pwd`/$MODEL_DIR"
+      SERVER_ARGS="--model-repository=`pwd`/$MODEL_DIR --backend-directory=${BACKEND_DIR}"
       SERVER_LOG="./$i.$MODEL_DIR.serverlog"
       
       if [ "$TEST_VALGRIND" -eq 1 ]; then
